@@ -10,10 +10,9 @@
             "request": "launch",
             "cwd": "${workspaceFolder}",
             "runtimeExecutable": "/Users/huangtao/IdeaProjects/joplin/node_modules/electron/cli.js",
-            //"program": "${workspaceFolder}/packages/app-desktop/main.js",
-            "program": "${workspaceFolder}/packages/app-mobile/main.js",
+            "program": "${workspaceFolder}/packages/app-desktop/main.js",
             "stopOnEntry": false,
-            "args" : [],
+            "args" : ["--env","dev"],
             "env": {
                 "NODE_ENV": "development"
             },
