@@ -108,4 +108,6 @@ libasound
 libatk
 ENOTFOUND
 Scaleway
+Inkscape
 Ionicon
+Stormlikes
