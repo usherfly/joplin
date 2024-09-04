@@ -12,12 +12,13 @@
             "runtimeExecutable": "/Users/huangtao/IdeaProjects/joplin/node_modules/electron/cli.js",
             "program": "${workspaceFolder}/packages/app-desktop/main.js",
             "stopOnEntry": false,
-            "args" : ["--env","dev"],
+            "args" : [],
             "env": {
                 "NODE_ENV": "development"
             },
             "console": "integratedTerminal",
-            "outputCapture": "std"
+            "outputCapture": "std",
+            "sourceMaps": true
         }
     ]
 }

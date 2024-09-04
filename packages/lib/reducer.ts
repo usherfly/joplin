@@ -894,6 +894,7 @@ const reducer = produce((draft: Draft<State> = defaultState, action: any) => {
 			break;
 
 		case 'FOLDER_SELECT':
+			console.log('FOLDER_SELECT action detected=====6:', action);
 			changeSelectedFolder(draft, action, { clearSelectedNoteIds: true });
 			break;
 

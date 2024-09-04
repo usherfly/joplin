@@ -24,6 +24,12 @@ const onHeaderClick = (headerId: HeaderId) => {
 	Setting.setValue(settingKey, !current);
 };
 
+const onChatHeaderClick = (headerId: HeaderId) => {
+	// 日志
+	console.log(`onChatHeaderClick ${headerId}`);
+};
+
+
 const useSidebarListData = (props: Props): ListItem[] => {
 	const tagItems = useMemo(() => {
 		return renderTags<ListItem>(props.tags, (tag): TagListItem => {
@@ -69,6 +75,21 @@ const useSidebarListData = (props: Props): ListItem[] => {
 			},
 			supportsFolderDrop: true,
 		};
+
+		const chatfoldersHeader: HeaderListItem = {
+			kind: ListItemType.Header,
+			label: _('Chatshorthand'),
+			iconName: 'icon-notebooks',
+			id: HeaderId.FolderHeader,
+			key: HeaderId.FolderHeader,
+			onClick: onChatHeaderClick,
+			onPlusButtonClick: onAddFolderButtonClick,
+			extraProps: {
+				['data-folder-id']: '',
+			},
+			supportsFolderDrop: true,
+		};
+
 		const foldersSectionContent: ListItem[] = props.folderHeaderIsExpanded ? [
 			{ kind: ListItemType.AllNotes, key: 'all-notes' },
 			...folderItems.items,
@@ -89,6 +110,7 @@ const useSidebarListData = (props: Props): ListItem[] => {
 		const tagsSectionContent: ListItem[] = props.tagHeaderIsExpanded ? tagItems.items : [];
 
 		const items: ListItem[] = [
+			chatfoldersHeader,
 			foldersHeader,
 			...foldersSectionContent,
 			tagsHeader,

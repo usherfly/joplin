@@ -358,7 +358,8 @@
 			"vendor/": true,
 			"web/bundles/": true,
 			"web/env.php": true,
-		}
+		},
+		"java.compile.nullAnalysis.mode": "automatic"
 	},
 	"tasks": {
 		"version": "2.0.0",
