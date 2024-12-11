@@ -42,12 +42,14 @@ import { MasterKeyEntity } from '@joplin/lib/services/e2ee/types';
 import commands from './commands/index';
 import invitationRespond from '@joplin/lib/services/share/invitationRespond';
 import restart from '../../services/restart';
+import { reg } from '@joplin/lib/registry';
 const { connect } = require('react-redux');
 import PromptDialog from '../PromptDialog';
 import NotePropertiesDialog from '../NotePropertiesDialog';
 import { NoteListColumns } from '@joplin/lib/services/plugins/api/noteListType';
 import validateColumns from '../NoteListHeader/utils/validateColumns';
 import TrashNotification from '../TrashNotification/TrashNotification';
+import ChatWindow from '../ChatWindow/ChatWindow';
 
 const PluginManager = require('@joplin/lib/services/PluginManager');
 const ipcRenderer = require('electron').ipcRenderer;
@@ -98,6 +100,7 @@ interface Props {
 	notesSortOrderReverse: boolean;
 	notesColumns: NoteListColumns;
 	showInvalidJoplinCloudCredential: boolean;
+	showChatWindow: boolean;
 }
 
 interface ShareFolderDialogOptions {
@@ -270,8 +273,8 @@ class MainScreenComponent extends React.Component<Props, State> {
 				throw new Error('"sideBar", "noteList" and "editor" must be present in the layout');
 			}
 		} catch (error) {
-			console.warn('Could not load layout - restoring default layout:', error);
-			console.warn('Layout was:', userLayout);
+			reg.logger().warn('Could not load layout - restoring default layout:', error);
+			reg.logger().warn('Layout was:', userLayout);
 			output = loadLayout(null, defaultLayout, rootLayoutSize);
 		}
 
@@ -432,8 +435,7 @@ class MainScreenComponent extends React.Component<Props, State> {
 
 	public async waitForNoteToSaved(noteId: string) {
 		while (noteId && this.props.editorNoteStatuses[noteId] === 'saving') {
-			// eslint-disable-next-line no-console
-			console.info('Waiting for note to be saved...', this.props.editorNoteStatuses);
+			reg.logger().info('Waiting for note to be saved...', this.props.editorNoteStatuses);
 			await time.msleep(100);
 		}
 	}
@@ -442,8 +444,7 @@ class MainScreenComponent extends React.Component<Props, State> {
 	public async printTo_(target: string, options: any) {
 		// Concurrent print calls are disallowed to avoid incorrect settings being restored upon completion
 		if (this.isPrinting_) {
-			// eslint-disable-next-line no-console
-			console.info(`Printing ${options.path} to ${target} disallowed, already printing.`);
+			reg.logger().info(`Printing ${options.path} to ${target} disallowed, already printing.`);
 			return;
 		}
 
@@ -463,7 +464,7 @@ class MainScreenComponent extends React.Component<Props, State> {
 				});
 				await shim.fsDriver().writeFile(options.path, pdfData, 'buffer');
 			} catch (error) {
-				console.error(error);
+				reg.logger().error(error);
 				bridge().showErrorMessageBox(error.message);
 			}
 		} else if (target === 'printer') {
@@ -473,7 +474,7 @@ class MainScreenComponent extends React.Component<Props, State> {
 					customCss: this.props.customCss,
 				});
 			} catch (error) {
-				console.error(error);
+				reg.logger().error(error);
 				bridge().showErrorMessageBox(error.message);
 			}
 		}
@@ -752,7 +753,7 @@ class MainScreenComponent extends React.Component<Props, State> {
 		// doesn't crash.
 		// https://discourse.joplinapp.org/t/rearranging-the-pannels-crushed-the-app-and-generated-fatal-error/14373?u=laurent
 		if (!key) {
-			console.error('resizableLayout_renderItem: Trying to render an item using an empty key. Full layout is:', this.props.mainLayout);
+			reg.logger().error('resizableLayout_renderItem: Trying to render an item using an empty key. Full layout is:', this.props.mainLayout);
 			return null;
 		}
 
@@ -783,6 +784,10 @@ class MainScreenComponent extends React.Component<Props, State> {
 			},
 
 			editor: () => {
+				if (this.props.showChatWindow) {
+					return <ChatWindow/>;
+				}
+
 				let bodyEditor = this.props.settingEditorCodeView ? 'CodeMirror' : 'TinyMCE';
 
 				if (this.props.isSafeMode) {
@@ -808,7 +813,7 @@ class MainScreenComponent extends React.Component<Props, State> {
 				// Before they are loaded, there might be views that don't match
 				// any plugins, but that's only because it hasn't loaded yet.
 				if (this.props.startupPluginsLoaded) {
-					console.warn(`Could not find plugin associated with view: ${event.item.key}`);
+					reg.logger().warn(`Could not find plugin associated with view: ${event.item.key}`);
 					viewsToRemove.push(event.item.key);
 				}
 			} else {
@@ -838,7 +843,7 @@ class MainScreenComponent extends React.Component<Props, State> {
 				}
 
 				if (newLayout !== this.props.mainLayout) {
-					console.warn('Removed invalid views:', viewsToRemove);
+					reg.logger().warn('Removed invalid views:', viewsToRemove);
 					this.updateMainLayout(newLayout);
 				}
 			});
@@ -981,6 +986,7 @@ const mapStateToProps = (state: AppState) => {
 		notesSortOrderReverse: state.settings['notes.sortOrder.reverse'],
 		notesColumns: validateColumns(state.settings['notes.columns']),
 		showInvalidJoplinCloudCredential: state.settings['sync.target'] === 10 && state.mustAuthenticate,
+		showChatWindow: state.showChatWindow,
 	};
 };
 

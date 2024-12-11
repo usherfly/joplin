@@ -134,6 +134,7 @@ export interface State {
 	lastDeletionNotificationTime: number;
 	mustUpgradeAppMessage: string;
 	mustAuthenticate: boolean;
+	showChatWindow: boolean;
 
 	// Extra reducer keys go here:
 	pluginService: PluginServiceState;
@@ -220,6 +221,7 @@ export const defaultState: State = {
 
 	pluginService: pluginServiceDefaultState,
 	shareService: shareServiceDefaultState,
+	showChatWindow: false,
 };
 
 for (const additionalReducer of additionalReducers) {
@@ -894,8 +896,10 @@ const reducer = produce((draft: Draft<State> = defaultState, action: any) => {
 			break;
 
 		case 'FOLDER_SELECT':
-			console.log('FOLDER_SELECT action detected=====6:', action);
 			changeSelectedFolder(draft, action, { clearSelectedNoteIds: true });
+			break;
+		case 'CHAT_CLICK':
+			draft.showChatWindow = !draft.showChatWindow;
 			break;
 
 		case 'FOLDER_AND_NOTE_SELECT':

@@ -69,6 +69,20 @@ CREATE INDEX note_tags_note_id ON note_tags (note_id);
 CREATE INDEX note_tags_tag_id ON note_tags (tag_id);
 CREATE INDEX note_tags_updated_time ON note_tags (updated_time);
 
+CREATE TABLE chats (
+    encryption_applied INT,
+    encryption_cipher_text TEXT,
+    parent_id TEXT,
+    id INT PRIMARY KEY,
+    msg TEXT,
+    markup_language INT,
+    created_time INT,
+    deleted_time INT,
+    updated_time INT
+);
+CREATE INDEX chats_parent_id ON chats (parent_id);
+CREATE INDEX chats_created_time ON chats (created_time);
+
 CREATE TABLE resources (
 	id TEXT PRIMARY KEY,
 	title TEXT NOT NULL DEFAULT "",
@@ -191,6 +205,7 @@ export default class JoplinDatabase extends Database {
 	public async clearForTesting() {
 		const tableNames = [
 			'notes',
+			'chats',
 			'folders',
 			'resources',
 			'tags',
@@ -923,7 +938,27 @@ export default class JoplinDatabase extends Database {
 				queries.push('ALTER TABLE `folders` ADD COLUMN icon TEXT NOT NULL DEFAULT ""');
 			}
 
-			if (targetVersion > 41) {
+			if (targetVersion === 42) {
+				const chatsSql = `
+					CREATE TABLE IF NOT EXISTS chats (
+						encryption_applied INT,
+						encryption_cipher_text TEXT,
+						parent_id TEXT,
+						id INT PRIMARY KEY,
+						msg TEXT,
+						markup_language INT,
+						created_time INT,
+						deleted_time INT,
+						updated_time INT
+					);
+				`;
+
+				queries.push(chatsSql);
+				queries.push('CREATE INDEX IF NOT EXISTS chats_parent_id ON chats (parent_id)');
+				queries.push('CREATE INDEX IF NOT EXISTS chats_created_time ON chats (created_time)');
+			}
+
+			if (targetVersion > 42) {
 				const migration = migrations[targetVersion - 42];
 				if (!migration) throw new Error(`No such migration: ${targetVersion}`);
 				const migrationQueries = migration();

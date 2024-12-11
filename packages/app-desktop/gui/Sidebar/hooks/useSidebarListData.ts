@@ -5,8 +5,10 @@ import { buildFolderTree, renderFolders, renderTags } from '@joplin/lib/componen
 import { _ } from '@joplin/lib/locale';
 import CommandService from '@joplin/lib/services/CommandService';
 import Setting from '@joplin/lib/models/Setting';
+import { Dispatch } from 'redux';
 
 interface Props {
+	dispatch: Dispatch;
 	tags: TagsWithNoteCountEntity[];
 	folders: FolderEntity[];
 	collapsedFolderIds: string[];
@@ -24,9 +26,11 @@ const onHeaderClick = (headerId: HeaderId) => {
 	Setting.setValue(settingKey, !current);
 };
 
-const onChatHeaderClick = (headerId: HeaderId) => {
-	// 日志
-	console.log(`onChatHeaderClick ${headerId}`);
+const onChatHeaderClick = (headerId: HeaderId, dispatch: Dispatch) => {
+	dispatch({
+		type: 'CHAT_CLICK',
+		id: headerId,
+	});
 };
 
 
@@ -62,6 +66,10 @@ const useSidebarListData = (props: Props): ListItem[] => {
 	}, [folderTree, props.collapsedFolderIds]);
 
 	return useMemo(() => {
+		const boundOnChatHeaderClick = (headerId: HeaderId) => {
+			onChatHeaderClick(headerId, props.dispatch);
+		};
+
 		const foldersHeader: HeaderListItem = {
 			kind: ListItemType.Header,
 			label: _('Notebooks'),
@@ -76,13 +84,13 @@ const useSidebarListData = (props: Props): ListItem[] => {
 			supportsFolderDrop: true,
 		};
 
-		const chatfoldersHeader: HeaderListItem = {
+		const chat_foldersHeader: HeaderListItem = {
 			kind: ListItemType.Header,
-			label: _('Chatshorthand'),
+			label: _('Chat History'),
 			iconName: 'icon-notebooks',
 			id: HeaderId.FolderHeader,
 			key: HeaderId.FolderHeader,
-			onClick: onChatHeaderClick,
+			onClick: boundOnChatHeaderClick,
 			onPlusButtonClick: onAddFolderButtonClick,
 			extraProps: {
 				['data-folder-id']: '',
@@ -110,14 +118,14 @@ const useSidebarListData = (props: Props): ListItem[] => {
 		const tagsSectionContent: ListItem[] = props.tagHeaderIsExpanded ? tagItems.items : [];
 
 		const items: ListItem[] = [
-			chatfoldersHeader,
+			chat_foldersHeader,
 			foldersHeader,
 			...foldersSectionContent,
 			tagsHeader,
 			...tagsSectionContent,
 		];
 		return items;
-	}, [tagItems, folderItems, props.folderHeaderIsExpanded, props.tagHeaderIsExpanded]);
+	}, [props.dispatch, tagItems, folderItems, props.folderHeaderIsExpanded, props.tagHeaderIsExpanded]);
 };
 
 export default useSidebarListData;
