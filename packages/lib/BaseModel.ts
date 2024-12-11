@@ -26,6 +26,7 @@ export enum ModelType {
 	Migration = 14,
 	SmartFilter = 15,
 	Command = 16,
+	Chat = 17,
 }
 
 export interface DeleteOptions {
@@ -78,6 +79,7 @@ class BaseModel {
 		['TYPE_MIGRATION', ModelType.Migration],
 		['TYPE_SMART_FILTER', ModelType.SmartFilter],
 		['TYPE_COMMAND', ModelType.Command],
+		['TYPE_CHAT', ModelType.Chat],
 	];
 
 	public static TYPE_NOTE = ModelType.Note;
@@ -96,6 +98,7 @@ class BaseModel {
 	public static TYPE_MIGRATION = ModelType.Migration;
 	public static TYPE_SMART_FILTER = ModelType.SmartFilter;
 	public static TYPE_COMMAND = ModelType.Command;
+	public static TYPE_CHAT = ModelType.Chat;
 
 	// eslint-disable-next-line @typescript-eslint/ban-types -- Old code before rule was applied
 	public static dispatch: Function = function() {};
