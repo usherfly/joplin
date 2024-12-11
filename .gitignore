@@ -143,6 +143,8 @@ packages/app-desktop/commands/switchProfile3.js
 packages/app-desktop/commands/toggleExternalEditing.js
 packages/app-desktop/commands/toggleSafeMode.js
 packages/app-desktop/gui/Button/Button.js
+packages/app-desktop/gui/ChatWindow/ChatWindow.js
+packages/app-desktop/gui/ChatWindow/utils/useFormChat.js
 packages/app-desktop/gui/ClipperConfigScreen.js
 packages/app-desktop/gui/ConfigScreen/ButtonBar.js
 packages/app-desktop/gui/ConfigScreen/ConfigScreen.js
@@ -895,6 +897,7 @@ packages/lib/mime-utils.js
 packages/lib/models/Alarm.js
 packages/lib/models/BaseItem.test.js
 packages/lib/models/BaseItem.js
+packages/lib/models/Chat.js
 packages/lib/models/Folder.sharing.test.js
 packages/lib/models/Folder.test.js
 packages/lib/models/Folder.js
@@ -992,6 +995,7 @@ packages/lib/services/database/migrations/44.js
 packages/lib/services/database/migrations/45.js
 packages/lib/services/database/migrations/46.js
 packages/lib/services/database/migrations/47.js
+packages/lib/services/database/migrations/48.js
 packages/lib/services/database/migrations/index.js
 packages/lib/services/database/sqlStringToLines.js
 packages/lib/services/database/types.js
@@ -1391,3 +1395,4 @@ packages/tools/website/utils/render.js
 packages/tools/website/utils/types.js
 # AUTO-GENERATED - EXCLUDED TYPESCRIPT BUILD
 
+yarn.lock

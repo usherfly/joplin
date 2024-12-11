@@ -5,6 +5,7 @@ import iterateItems from './gui/ResizableLayout/utils/iterateItems';
 import { LayoutItem } from './gui/ResizableLayout/utils/types';
 import validateLayout from './gui/ResizableLayout/utils/validateLayout';
 import Logger from '@joplin/utils/Logger';
+import { ChatEntity } from '@joplin/lib/services/database/types';
 
 const logger = Logger.create('app.reducer');
 
@@ -52,6 +53,9 @@ export interface AppState extends State {
 	mainLayout: LayoutItem;
 	dialogs: AppStateDialog[];
 	isResettingLayout: boolean;
+	chats: ChatEntity[];
+	chatLoadingState: boolean;
+	chatError: Error | null;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Old code before rule was applied
@@ -76,6 +80,9 @@ export function createAppDefaultState(windowContentSize: any, resourceEditWatche
 		startupPluginsLoaded: false,
 		dialogs: [],
 		isResettingLayout: false,
+		chats: [],
+		chatLoadingState: false,
+		chatError: null,
 		...resourceEditWatcherDefaultState,
 	};
 }
@@ -341,6 +348,36 @@ export default function(state: AppState, action: any) {
 			newState = {
 				...state,
 				isResettingLayout: action.value,
+			};
+			break;
+
+		case 'CHAT_SET_ALL':
+			newState = {
+				...state,
+				chats: action.payload?.chats || [],
+			};
+			break;
+
+		case 'CHAT_ADD':
+			if (action.payload?.chat) {
+				newState = {
+					...state,
+					chats: [...state.chats, action.payload.chat],
+				};
+			}
+			break;
+
+		case 'CHAT_SET_LOADING':
+			newState = {
+				...state,
+				chatLoadingState: action.payload?.isLoading ?? false,
+			};
+			break;
+
+		case 'CHAT_SET_ERROR':
+			newState = {
+				...state,
+				chatError: action.payload?.error || null,
 			};
 			break;
 
