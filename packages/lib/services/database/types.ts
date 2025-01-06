@@ -214,6 +214,17 @@ export interface NoteTagEntity {
   'user_updated_time'?: number;
   'type_'?: number;
 }
+export interface ChatEntity {
+	'encryption_applied'?: number;
+	'encryption_cipher_text'?: string;
+	'parent_id'?: string;
+	'id'?: string | null;
+	'msg'?: string;
+	'markup_language'?: number;
+	'created_time'?: number;
+	'deleted_time'?: number;
+	'updated_time'?: number;
+}
 export interface NoteEntity {
   'altitude'?: number;
   'application_data'?: string;
@@ -550,6 +561,17 @@ export const databaseSchema: DatabaseTables = {
 		updated_time: { type: 'number' },
 		value: { type: 'string' },
 		type_: { type: 'number' },
+	},
+	chats: {
+		encryption_applied: { type: 'number' },
+		encryption_cipher_text: { type: 'string' },
+		parent_id: { type: 'string' },
+		id: { type: 'number' },
+		msg: { type: 'string' },
+		markup_language: { type: 'number' },
+		created_time: { type: 'number' },
+		deleted_time: { type: 'number' },
+		updated_time: { type: 'number' },
 	},
 	notes: {
 		altitude: { type: 'number' },
